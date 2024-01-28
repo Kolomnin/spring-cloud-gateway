@@ -1,0 +1,39 @@
+
+server:
+  port: 8765
+
+spring:
+  application:
+    name: cloud-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          # Включает интеграцию с Service Discovery, что позволяет API-шлюзу автоматически обнаруживать и
+          # маршрутизировать запросы к зарегистрированным сервисам в Eureka.
+          enabled: true
+          # Задает использование строчных букв для идентификаторов сервисов при обнаружении.
+          lower-case-service-id: true
+      routes:
+        - id: hello
+          uri: lb://eureka-client
+          predicates:
+            - Path=/hello/world
+            - Method=GET
+
+# Устанавливает URL-адрес Eureka Server для регистрации и обнаружения сервисов
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    com.netflix.eureka: OFF
+    com.netflix.discovery: OFF
+    org.springframework.web: DEBUG
+# pattern:
+# console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
+
+
+
