@@ -1,0 +1,38 @@
+server:
+  port: 8888
+  # Порт, на котором будет работать Spring Cloud Config Server
+
+spring:
+  application:
+    name: config-server
+    # Имя приложения Spring Cloud Config Server
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Kolomnin/remote-configurations.git
+          # URI Git-репозитория с конфигурациями
+
+          clone-on-start: true
+          # Клонировать репозиторий при старте Config Server
+
+          basedir: file://c:/Users/Sergei/IdeaProjects/spring-cloud-gateway/remote-configurations
+          # Локальный путь для клонирования репозитория
+
+          username: kolomnin
+          # Имя пользователя Git (если требуется аутентификация)
+
+          password: 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
+          # Пароль Git (если требуется аутентификация)
+
+          default-label: main
+          # Ветка Git по умолчанию
+
+logging:
+  level:
+    com.netflix.eureka: OFF  # Отключение логирования для Eureka
+    com.netflix.discovery: OFF  # Отключение логирования для Discovery
+    org.springframework.web: DEBUG  # Установка уровня логирования для пакета org.springframework.web
+# pattern:
+# console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
