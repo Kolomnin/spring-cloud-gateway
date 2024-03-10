@@ -1,4 +1,3 @@
-
 server:
   port: 8765
 
@@ -34,6 +33,3 @@ logging:
     org.springframework.web: DEBUG
 # pattern:
 # console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
-
-
-
