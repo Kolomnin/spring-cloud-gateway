@@ -1,8 +1,6 @@
 package ru.acron.eurekaclient.entity;
 
-import jakarta.persistence.Entity;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "SQL_SCRIPT")
