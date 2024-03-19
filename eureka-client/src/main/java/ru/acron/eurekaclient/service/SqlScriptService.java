@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class SQLScriptService {
+public class SqlScriptService {
 
     private final SQLScriptRepository sqlScriptRepository;
 
-    public SQLScriptService(SQLScriptRepository sqlScriptRepository) {
+    public SqlScriptService(SQLScriptRepository sqlScriptRepository) {
         this.sqlScriptRepository = sqlScriptRepository;
     }
 
@@ -28,6 +28,7 @@ public class SQLScriptService {
         sqlScriptRepository.save(script);
     }
 
+    // Для обновлнения данных:
     public void update(Long sqlId, String sqlText) {
         SqlScript script = sqlScriptRepository.findById(sqlId).orElse(null);
         if (script != null) {
@@ -36,6 +37,7 @@ public class SQLScriptService {
         }
     }
 
+    // Удаления данных
     public void delete(Long sqlId) {
         sqlScriptRepository.deleteById(sqlId);
     }

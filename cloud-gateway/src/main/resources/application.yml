@@ -21,6 +21,7 @@ spring:
             - Path=/hello/world
             - Method=GET
 
+
 # Устанавливает URL-адрес Eureka Server для регистрации и обнаружения сервисов
 eureka:
   client:

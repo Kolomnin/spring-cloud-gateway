@@ -1,25 +1,25 @@
 spring:
   datasource:
-    #  URL-адрес базы данных PostgreSQL, к которой приложение будет подключаться.
+    # URL-адрес базы данных PostgreSQL, к которой приложение будет подключаться
     url: jdbc:postgresql://localhost:5432/TestBase
     username: postgres
-    password: 123456
-    # Класс драйвера JDBC для PostgreSQL.
+    password: 1
     driver-class-name: org.postgresql.Driver
   jpa:
-    # Флаг, включен для автоматического создания или обновления схемы базы данных на основе сущностей JPA.
+    # Флаг, включен для автоматического создания или обновления схемы базы данных на основе сущностей JPA
     generate-ddl: true
     # Флаг, указывающий на необходимость отображения SQL-запросов, генерируемых JPA, в журнале приложения.
     show-sql: true
     hibernate:
-    # Hibernate будет автоматически обновлять схему базы данных на основе моделей сущностей
+    # Hibernate будет автоматически обновлять схему базы данных на основе моделей сущностей.
       ddl-auto: update
     properties:
       hibernate:
-    # Определяет как Hibernate будет генерировать SQL для работы с базой данных PostgreSQL
+        # Диалект Hibernate для PostgreSQL, определяющий, как Hibernate будет генерировать SQL для работы с базой данных PostgreSQL.
         dialect: org.hibernate.dialect.PostgreSQL95Dialect
     liquibase:
       # Флаг, указывающий на включение интеграции Liquibase для управления изменениями в базе данных.
       enabled: true
-      # файл находится в ресурсах приложения и его имя changelog-master.yml
       change-log: classpath:db/changelog/changelog-master.yml
+
+

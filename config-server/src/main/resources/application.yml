@@ -17,7 +17,7 @@ spring:
           clone-on-start: true
           # Клонировать репозиторий при старте Config Server
 
-          basedir: file://c:/Users/Sergei/IdeaProjects/spring-cloud-gateway/remote-configurations
+          basedir: file://c:/Users/kolomnin/IdeaProjects/remote-configurations
           # Локальный путь для клонирования репозитория
 
           username: kolomnin
@@ -34,5 +34,6 @@ logging:
     com.netflix.eureka: OFF  # Отключение логирования для Eureka
     com.netflix.discovery: OFF  # Отключение логирования для Discovery
     org.springframework.web: DEBUG  # Установка уровня логирования для пакета org.springframework.web
-# pattern:
-# console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
+#  pattern:
+#    console: "%C{1.} [%-5level] %d{HH:mm:ss} - %msg%n"
+
