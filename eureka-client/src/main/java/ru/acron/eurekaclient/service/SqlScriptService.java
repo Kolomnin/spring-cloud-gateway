@@ -1,7 +1,7 @@
 package ru.acron.eurekaclient.service;
 
 import org.springframework.stereotype.Service;
-import ru.acron.eurekaclient.entity.SqlScript;
+import ru.acron.eurekaclient.model.SqlScript;
 import ru.acron.eurekaclient.repository.SQLScriptRepository;
 
 import java.util.List;
@@ -22,8 +22,9 @@ public class SqlScriptService {
     }
 
     // Для вставки данных:
-    public void insert(String sqlText) {
+    public void insert(Long sqlId, String sqlText) {
         SqlScript script = new SqlScript();
+        script.setSqlId(sqlId);
         script.setSqlText(sqlText);
         sqlScriptRepository.save(script);
     }

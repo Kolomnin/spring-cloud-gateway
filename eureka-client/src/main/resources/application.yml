@@ -4,6 +4,29 @@ spring:
   config:
     import: optional:configserver:http://localhost:8888
 
+  datasource:
+    # URL-адрес базы данных PostgreSQL, к которой приложение будет подключаться
+    url: jdbc:postgresql://localhost:5432/TestBase
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    # Флаг, включен для автоматического создания или обновления схемы базы данных на основе сущностей JPA
+    generate-ddl: true
+    # Флаг, указывающий на необходимость отображения SQL-запросов, генерируемых JPA, в журнале приложения.
+    show-sql: true
+    hibernate:
+      # Hibernate будет автоматически обновлять схему базы данных на основе моделей сущностей.
+      ddl-auto: update
+    properties:
+      hibernate:
+        # Диалект Hibernate для PostgreSQL, определяющий, как Hibernate будет генерировать SQL для работы с базой данных PostgreSQL.
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    liquibase:
+      # Флаг, указывающий на включение интеграции Liquibase для управления изменениями в базе данных.
+      enabled: true
+      change-log: classpath:db/changelog/changelog-master.yml
+
 
 
 
