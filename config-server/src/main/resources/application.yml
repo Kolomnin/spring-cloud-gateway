@@ -17,13 +17,13 @@ spring:
           clone-on-start: true
           # Клонировать репозиторий при старте Config Server
 
-          basedir: file://c:/Users/kolomnin/IdeaProjects/remote-configurations
+          basedir: file:///c/Users/Sergei/IdeaProjects/spring-cloud-gateway/remote-configurations
           # Локальный путь для клонирования репозитория
 
           username: kolomnin
           # Имя пользователя Git (если требуется аутентификация)
 
-          password: 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
+          password:
           # Пароль Git (если требуется аутентификация)
 
           default-label: main

@@ -2,7 +2,7 @@ package ru.acron.eurekaclient.service;
 
 import org.springframework.stereotype.Service;
 import ru.acron.eurekaclient.model.SqlScript;
-import ru.acron.eurekaclient.repository.SQLScriptRepository;
+import ru.acron.eurekaclient.repository.SqLScriptRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +10,9 @@ import java.util.Optional;
 @Service
 public class SqlScriptService {
 
-    private final SQLScriptRepository sqlScriptRepository;
+    private final SqLScriptRepository sqlScriptRepository;
 
-    public SqlScriptService(SQLScriptRepository sqlScriptRepository) {
+    public SqlScriptService(SqLScriptRepository sqlScriptRepository) {
         this.sqlScriptRepository = sqlScriptRepository;
     }
 

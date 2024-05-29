@@ -15,6 +15,7 @@ public class SqlData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "DATA_ID")
     private String dataId;
 
     @Column(name = "DATA_VALUE")
