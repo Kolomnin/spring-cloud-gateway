@@ -8,7 +8,7 @@ import java.util.Optional;
 
 
 @Repository
-public interface SqLScriptRepository extends JpaRepository<SqlScript, Long> {
+public interface SqlScriptRepository extends JpaRepository<SqlScript, Long> {
 
     Optional<SqlScript> findBySqlId(Long sqlId);
     Optional<SqlScript> findBySqlText(String sqlText);

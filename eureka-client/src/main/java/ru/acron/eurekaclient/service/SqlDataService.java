@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 import ru.acron.eurekaclient.controller.SqlDataController;
 import ru.acron.eurekaclient.model.SqlScript;
-import ru.acron.eurekaclient.repository.SqLScriptRepository;
+import ru.acron.eurekaclient.repository.SqlScriptRepository;
 
 import java.util.*;
 
@@ -19,7 +19,7 @@ import java.util.*;
 @Service
 public class SqlDataService {
 
-    private final SqLScriptRepository sqLScriptRepository;
+    private final SqlScriptRepository sqlScriptRepository;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private static final Logger logger = LoggerFactory.getLogger(SqlDataController.class);
@@ -27,11 +27,11 @@ public class SqlDataService {
     /**
      * Конструктор для создания экземпляра сервиса с необходимыми зависимостями.
      *
-     * @param sqLScriptRepository           Репозиторий для доступа к SQL-скриптам.
+     * @param sqlScriptRepository           Репозиторий для доступа к SQL-скриптам.
      * @param namedParameterJdbcTemplate   Объект для выполнения SQL-запросов с именованными параметрами.
      */
-    public SqlDataService(SqLScriptRepository sqLScriptRepository, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.sqLScriptRepository = sqLScriptRepository;
+    public SqlDataService(SqlScriptRepository sqlScriptRepository, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.sqlScriptRepository = sqlScriptRepository;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
@@ -41,6 +41,10 @@ public class SqlDataService {
      * @param sqlId   Идентификатор SQL-запроса.
      * @param params  Параметры для SQL-запроса.
      * @return        Ответ на запрос.
+     * Метод принимает sqlId (идентификатор SQL-запроса) и params (параметры для SQL-запроса).
+     * Запрашивает SQL-текст по идентификатору с помощью метода getSqlText.
+     * Заменяет параметры в тексте запроса.
+     * В зависимости от типа запроса, вызывает соответствующий метод для выполнения запроса.
      */
     public ResponseEntity<?> executeQueryBySqlId(Long sqlId, Map<String, String> params) {
         String sqlText = getSqlText(sqlId);
@@ -64,10 +68,13 @@ public class SqlDataService {
     }
 
     /**
-     * Логика выполнения запроса типа SELECT.
-     *
-     * @param sqlQuery  Текст SQL-запроса.
-     * @return          Ответ на запрос.
+     * List<Map<String, Object>> rows = namedParameterJdbcTemplate.queryForList(sqlQuery, new MapSqlParameterSource());
+     * Метод queryForList из NamedParameterJdbcTemplate выполняет SQL-запрос, переданный в sqlQuery, и возвращает
+     * результаты в виде списка строк (каждая строка представлена как Map<String, Object>).
+     * Параметры для запроса передаются через MapSqlParameterSource, который в данном случае пуст
+     * (означает, что запрос не содержит именованных параметров).
+     *  @param sqlQuery  Текст SQL-запроса.
+     *  @return          Ответ на запрос.
      */
     private ResponseEntity<?> executeSelect(String sqlQuery) {
         List<Map<String, Object>> rows = namedParameterJdbcTemplate.queryForList(sqlQuery, new MapSqlParameterSource());
@@ -75,38 +82,62 @@ public class SqlDataService {
             return ResponseEntity.notFound().build();
         }
 
+        /**
+         * Метод createResponse используется для создания структуры ответа из результатов запроса.
+         * Он преобразует список строк в специальный формат,
+         * включающий информацию о столбцах (reqsInfo) и значения строк (values).
+         */
         Map<String, Object> response = createResponse(rows);
         return ResponseEntity.ok(response);
     }
 
     /**
      * Логика выполнения запросов типа INSERT, UPDATE, DELETE.
+     * Метод update объекта namedParameterJdbcTemplate используется для выполнения SQL-запроса.
      *
-     * @param sqlQuery  Текст SQL-запроса.
-     * @return          Ответ на запрос.
+     * sqlQuery: Строка с SQL-запросом, которую нужно выполнить.
+     * new MapSqlParameterSource(): Пустой объект MapSqlParameterSource, который используется
+     * для передачи параметров в запрос. В данном случае он пуст, так как параметры уже встроены в sqlQuery.
      */
     private ResponseEntity<?> executeUpdateInsertDelete(String sqlQuery) {
-        namedParameterJdbcTemplate.update(sqlQuery, new MapSqlParameterSource());
-        return ResponseEntity.ok(Map.of("result", "OK"));
+
+        try {
+            namedParameterJdbcTemplate.update(sqlQuery, new MapSqlParameterSource());
+            /**
+             * После успешной вставки данных метод вернет ответ: {"result": "OK"}
+             */
+            return ResponseEntity.ok(Map.of("result", "OK"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Не удалось выполнить запрос");
+        }
+
     }
 
     /**
-     * Создает структуру ответа для запроса типа SELECT.
-     *
-     * @param rows  Результаты запроса.
-     * @return      Структура ответа.
+     * Создание ответа для SELECT запроса.
      */
     private Map<String, Object> createResponse(List<Map<String, Object>> rows) {
-        List<Map<String, Object>> reqsInfo = Arrays.asList(
-                createReqInfo("DATA_ID", true),
-                createReqInfo("DATA_VALUE", false)
-        );
+        /**
+         * Здесь создается список reqsInfo, содержащий информацию о параметрах.
+         * Для этого вызывается метод createReqInfo дважды: первый раз для поля DATA_ID,
+         * который является первичным ключом, и второй раз для поля DATA_VALUE.
+         */
+        List<Map<String, Object>> reqsInfo = Arrays.asList(createReqInfo("DATA_ID", true),
+                createReqInfo("DATA_VALUE", false));
 
+        /**
+         * На этом шаге создается список values, содержащий значения данных из строк результата SQL-запроса.
+         * Для каждой строки (row) в rows, создается список значений (List<Object>)
+         * из полей DATA_ID и DATA_VALUE и добавляется в values.
+         */
         List<List<Object>> values = new ArrayList<>();
         for (Map<String, Object> row : rows) {
             values.add(Arrays.asList(row.get("DATA_ID"), row.get("DATA_VALUE")));
         }
-
+        /**
+         * Формирует структуру ответа для запроса типа SELECT.
+         * В этом шаге создается карта (Map<String, Object>) response, в которую добавляются reqsInfo и values.
+         */
         Map<String, Object> response = new HashMap<>();
         response.put("reqsInfo", reqsInfo);
         response.put("values", values);
@@ -116,10 +147,6 @@ public class SqlDataService {
 
     /**
      * Создает информацию о параметре запроса.
-     *
-     * @param name           Имя параметра.
-     * @param isPrimaryKey   Флаг первичного ключа.
-     * @return               Информация о параметре запроса.
      */
     private Map<String, Object> createReqInfo(String name, boolean isPrimaryKey) {
         Map<String, Object> reqInfo = new LinkedHashMap<>();
@@ -136,15 +163,29 @@ public class SqlDataService {
      * @return       Текст SQL-запроса.
      */
     private String getSqlText(Long sqlId) {
-        SqlScript sqlScript = sqLScriptRepository.findBySqlId(sqlId).orElse(null);
+
+        /**
+         * перед обращением к базе поискать в Redis текс запроса по SQL_ID
+         */
+
+        SqlScript sqlScript = sqlScriptRepository.findBySqlId(sqlId).orElse(null);
+        /**
+         * Добавить в SQL_Script в Redis
+         */
         return sqlScript != null ? sqlScript.getSqlText() : null;
     }
+
+
 
     /**
      * Обрабатывает запросы типа SELECT.
      *
-     * @param requestBody  Тело запроса.
-     * @return             Ответ на запрос.
+     *Метод проверяет, содержит ли requestBody (карта, представляющая тело запроса) ключ DATA_ID.
+     * Если ключа DATA_ID нет, метод возвращает ответ с кодом состояния 400 Bad Request
+     * и сообщением "Отсутствует DATA_ID в теле запроса".
+     * 1L — идентификатор SQL-скрипта, который указывает, какой скрипт SELECT нужно выполнить.
+     * Map.of("DATA_IDF", requestBody.get("DATA_ID")) — карта параметров, где ключом является DATA_IDF,
+     * а значением — значение, соответствующее ключу DATA_ID из requestBody.
      */
     public ResponseEntity<?> getDataBySqlIdSelect(Map<String, String> requestBody) {
         if (!requestBody.containsKey("DATA_ID")) {
