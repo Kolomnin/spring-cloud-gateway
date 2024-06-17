@@ -10,6 +10,7 @@ spring:
     username: postgres
     password: 123456
     driver-class-name: org.postgresql.Driver
+
   jpa:
     # Флаг, включен для автоматического создания или обновления схемы базы данных на основе сущностей JPA
     generate-ddl: true
@@ -22,11 +23,13 @@ spring:
       hibernate:
         # Диалект Hibernate для PostgreSQL, определяющий, как Hibernate будет генерировать SQL для работы с базой данных PostgreSQL.
         dialect: org.hibernate.dialect.PostgreSQLDialect
-    liquibase:
-      # Флаг, указывающий на включение интеграции Liquibase для управления изменениями в базе данных.
-      enabled: true
-      change-log: classpath:db/changelog/changelog-master.yml
 
-
-
-
+  liquibase:
+    # Флаг, указывающий на включение интеграции Liquibase для управления изменениями в базе данных.
+    enabled: true
+    change-log: classpath:db/changelog/changelog-master.yml
+  # Подключение Redis
+  data:
+    redis:
+      host: localhost
+      port: 6379

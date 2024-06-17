@@ -83,9 +83,9 @@ public class SqlDataService {
         }
 
         /**
-         * Метод createResponse используется для создания структуры ответа из результатов запроса.
-         * Он преобразует список строк в специальный формат,
-         * включающий информацию о столбцах (reqsInfo) и значения строк (values).
+          Метод createResponse используется для создания структуры ответа из результатов запроса.
+          Он преобразует список строк в специальный формат,
+          включающий информацию о столбцах (reqsInfo) и значения строк (values).
          */
         Map<String, Object> response = createResponse(rows);
         return ResponseEntity.ok(response);
