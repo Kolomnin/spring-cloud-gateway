@@ -20,15 +20,18 @@ public class RedisConfig {
      * Возвращает настроенный экземпляр RedisTemplate.
      */
 
+    // Установка Redis с помощью
+    // docker run --name redis -d -p 6379:6379 redis
+
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
 
-        // Сериализация для ключа
+        // Сериализация для ключа (String)
         redisTemplate.setKeySerializer(new StringRedisSerializer());
 
-        // Сериализация для значения (JSON)
+        // Сериализация для значения (в формате JSON)
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         return redisTemplate;
