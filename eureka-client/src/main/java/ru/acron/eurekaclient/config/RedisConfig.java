@@ -22,6 +22,9 @@ public class RedisConfig {
 
     // Установка Redis с помощью
     // docker run --name redis -d -p 6379:6379 redis
+    // docker exec -it redis redis-cli - подключение к Redis
+    // keys * - просмотр какие запросы в базе
+    // docker ps - проверка запущен ли контейнер
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {

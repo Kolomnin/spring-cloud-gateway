@@ -174,9 +174,9 @@ public class SqlDataService {
      * @param sqlId Идентификатор SQL-запроса.
      * @return Текст SQL-запроса, если он найден в кэше или базе данных, иначе null.
      */
-    public String getSqlText(Long sqlId) {
+    public String getSqlText(Long sqlId) {   //имя ХБО и имя операции
         // Формируем ключ для кэша Redis на основе идентификатора SQL-запроса
-        String cacheKey = "SQL_SCRIPT_" + sqlId;
+        String cacheKey = "SBO_NAME_" + sqlId;
 
         // Пытаемся получить текст SQL-запроса из кэша Redis
         String sqlText = (String) redisTemplate.opsForValue().get(cacheKey);
@@ -195,7 +195,6 @@ public class SqlDataService {
                 redisTemplate.opsForValue().set(cacheKey, sqlText, 24, TimeUnit.HOURS);
             }
         }
-
         // Возвращаем текст SQL-запроса (или null, если не найден)
         return sqlText;
     }
